@@ -4,17 +4,25 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Main {
 	public static void main(String[] args) {
 
 		ArrayList<Funcionario> funcionarios = new ArrayList<Funcionario>();
+		BigDecimal totalSalarios = BigDecimal.ZERO;
+		BigDecimal salarioMinimo = new BigDecimal("1212.00");
+		
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	    NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
 		funcionarios.add(new Funcionario("Maria", LocalDate.of(2000, 10, 18), new BigDecimal("2009.44"), "Operador"));
 		funcionarios.add(new Funcionario("João", LocalDate.of(1990, 5, 12), new BigDecimal("2284.38"), "Operador"));
@@ -29,10 +37,7 @@ public class Main {
 		
 	    funcionarios.removeIf(f -> f.getNome().equalsIgnoreCase("João"));
 	    
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	    NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-	    
-	    System.out.println("lista normal ja com a data e o salario formatado.");
+	    System.out.println("lista normal ja com a data, salario formatado e sem o João.");
 		
 		for (Funcionario f : funcionarios) {
 		    String dataFormatada = f.getDataNascimento().format(formatter);
@@ -77,20 +82,61 @@ public class Main {
 		    }
 		}
 		
+		System.out.println("\nlista dos funcionarios que fazem aniversario no mês 10 e 12 \n");
+		
 		List<Funcionario> aniversariantes = funcionarios.stream()
 		        .filter(f -> {
 		            int mes = f.getDataNascimento().getMonthValue();
 		            return mes == 10 || mes == 12;
 		        })
 		        .collect(Collectors.toList());
-		
-		System.out.println("\nlista dos funcionarios que fazem aniversario no mês 10 e 12 \n");
 
 
 		for (Funcionario f : aniversariantes) {
 		    System.out.println(f.getNome() + " | " 
 		                       + f.getDataNascimento().format(formatter) 
 		                       + " | " + f.getFuncao());
+		}
+		
+		System.out.println("---------------------------------------------");
+		
+		Optional<Funcionario> maisVelho = funcionarios.stream()
+		        .min(Comparator.comparing(Funcionario::getDataNascimento));
+		
+
+		Funcionario f = maisVelho.get();
+		int idade = Period.between(f.getDataNascimento(), LocalDate.now()).getYears();
+		System.out.println("O funcionário mais velho: " + f.getNome() + " | Idade: " + idade);
+		
+		System.out.println("\nLista dos funcionarios em ordem alfabetica: \n");
+		
+		// Ordena os funcionarios por nome
+		funcionarios.sort(Comparator.comparing(Funcionario::getNome));
+
+		for (Funcionario f1 : funcionarios) {
+		    String dataFormatada = f1.getDataNascimento().format(formatter);
+		    String salarioFormatado = nf.format(f1.getSalario());
+			System.out.println("----------------------------------------------\n" +
+					f1.getNome() + " | " + dataFormatada + " | " + salarioFormatado + " | " + f1.getFuncao());		   
+		}
+		
+		System.out.println("---------------------------------------------\n");
+		
+		for (Funcionario f2 : funcionarios) {
+		    totalSalarios = totalSalarios.add(f2.getSalario());
+		}
+
+		String totalFormatado = nf.format(totalSalarios);
+		System.out.println("Total dos salários: " + totalFormatado);
+		
+		System.out.println("\nLista de quantos salarios minimos os funcionarios ganham considereando que um salário minimo é R$ 1212.00:\n");
+		
+		for (Funcionario f3 : funcionarios) {
+		    BigDecimal qtdSalariosMinimos = f3.getSalario()
+		                                      .divide(salarioMinimo, 1, RoundingMode.HALF_UP);
+
+		    System.out.println("----------------------------------------------\n" +
+		    		f3.getNome() + " ganha " + qtdSalariosMinimos + " salários mínimos.");
 		}
 
 	}

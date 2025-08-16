@@ -31,10 +31,10 @@ O projeto foi desenvolvido como parte de um **teste prático de programação** 
 
 ## Estrutura do Projeto
 src/
-├── br.com.industria
-│ ├── Main.java
-│ ├── Pessoa.java
-│ └── Funcionario.java
+br.com.industria
+Main.java
+Pessoa.java
+Funcionario.java
 
 - **Pessoa.java**: Classe base com atributos `nome` e `dataNascimento`.  
 - **Funcionario.java**: Classe que estende `Pessoa` e adiciona `salario` e `funcao`.  

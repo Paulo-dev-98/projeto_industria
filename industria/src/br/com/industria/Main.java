@@ -1,9 +1,15 @@
 package br.com.industria;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Main {
 	public static void main(String[] args) {
@@ -24,11 +30,67 @@ public class Main {
 	    funcionarios.removeIf(f -> f.getNome().equalsIgnoreCase("João"));
 	    
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	    NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+	    
+	    System.out.println("lista normal ja com a data e o salario formatado.");
 		
 		for (Funcionario f : funcionarios) {
 		    String dataFormatada = f.getDataNascimento().format(formatter);
+		    String salarioFormatado = nf.format(f.getSalario());
 			System.out.println("----------------------------------------------\n" +
-					f.getNome() + " | " + dataFormatada + " | " + f.getSalario() + " | " + f.getFuncao());		   
+					f.getNome() + " | " + dataFormatada + " | " + salarioFormatado + " | " + f.getFuncao());		   
+		}
+		
+		BigDecimal aumento = new BigDecimal("0.10");
+
+		for (Funcionario f : funcionarios) {
+		    BigDecimal salarioAtual = f.getSalario();
+		    BigDecimal novoSalario = salarioAtual.add(salarioAtual.multiply(aumento));
+		    
+		    // Arredonda para 2 casas decimais.
+		    novoSalario = novoSalario.setScale(2, RoundingMode.HALF_UP);
+		    
+		    f.setSalario(novoSalario);
+		}
+		
+		System.out.println("lista com o acrescimo salarial");
+		
+		for (Funcionario f : funcionarios) {
+		    String dataFormatada = f.getDataNascimento().format(formatter);
+		    String salarioFormatado = nf.format(f.getSalario());
+			System.out.println("----------------------------------------------\n" +
+					f.getNome() + " | " + dataFormatada + " | " + salarioFormatado + " | " + f.getFuncao());		   
+		}
+		
+		System.out.println(); // quebra de linha;
+		
+		Map<String, List<Funcionario>> funcionariosPorFuncao = 
+		        funcionarios.stream()
+		                    .collect(Collectors.groupingBy(Funcionario::getFuncao));
+		
+		System.out.println("lista formatada por função:");
+		
+		for (Map.Entry<String, List<Funcionario>> entry : funcionariosPorFuncao.entrySet()) {
+		    System.out.println("Função: " + entry.getKey());
+		    for (Funcionario f : entry.getValue()) {
+		        System.out.println("  - " + f.getNome());
+		    }
+		}
+		
+		List<Funcionario> aniversariantes = funcionarios.stream()
+		        .filter(f -> {
+		            int mes = f.getDataNascimento().getMonthValue();
+		            return mes == 10 || mes == 12;
+		        })
+		        .collect(Collectors.toList());
+		
+		System.out.println("\nlista dos funcionarios que fazem aniversario no mês 10 e 12 \n");
+
+
+		for (Funcionario f : aniversariantes) {
+		    System.out.println(f.getNome() + " | " 
+		                       + f.getDataNascimento().format(formatter) 
+		                       + " | " + f.getFuncao());
 		}
 
 	}

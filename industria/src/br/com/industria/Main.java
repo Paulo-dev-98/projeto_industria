@@ -2,6 +2,7 @@ package br.com.industria;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Main {
@@ -21,10 +22,13 @@ public class Main {
 		funcionarios.add(new Funcionario("Helena", LocalDate.of(1996, 9, 2), new BigDecimal("2799.93"), "Gerente"));
 		
 	    funcionarios.removeIf(f -> f.getNome().equalsIgnoreCase("João"));
+	    
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
 		for (Funcionario f : funcionarios) {
+		    String dataFormatada = f.getDataNascimento().format(formatter);
 			System.out.println("----------------------------------------------\n" +
-					f.getNome() + " | " + f.getDataNascimento() + " | " + f.getSalario() + " | " + f.getFuncao());		   
+					f.getNome() + " | " + dataFormatada + " | " + f.getSalario() + " | " + f.getFuncao());		   
 		}
 
 	}

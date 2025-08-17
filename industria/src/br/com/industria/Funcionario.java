@@ -5,8 +5,8 @@ import java.time.LocalDate;
 
 public class Funcionario extends Pessoa {
 	
-	BigDecimal salario;
-	String funcao;
+	private BigDecimal salario;
+	private String funcao;
 	
 	public Funcionario(String nome, LocalDate dataNascimento, BigDecimal salario, String funcao) {
 		super(nome, dataNascimento);

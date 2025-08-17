@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class Pessoa {
 	
-	String nome;
-	LocalDate dataNascimento;
+	private String nome;
+	private LocalDate dataNascimento;
 	
 	public Pessoa(String nome, LocalDate dataNascimento) {
 		super();

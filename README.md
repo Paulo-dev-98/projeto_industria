@@ -64,6 +64,14 @@ Funcionario.java
 
 ---
 
+## Atualizações e Melhorias
+- Criação da classe Utils, responsável por centralizar métodos auxiliares.
+- A classe Main foi simplificada, ficando responsável apenas pelo fluxo principal da aplicação.
+- Melhor organização e separação de responsabilidades, tornando o código mais limpo e fácil de manter.
+- Métodos agora podem ser reutilizados em outros pontos do sistema de forma prática.
+
+---
+
 ## Autor
 **Paulo Júnio de Souza Nascimento**  
 Desenvolvedor Java / Angular  
